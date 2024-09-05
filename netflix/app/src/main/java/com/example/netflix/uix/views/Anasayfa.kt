@@ -34,26 +34,29 @@ fun Anasayfa(navController: NavController) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
-        val f1 = Netflix(1, "prisonbreak", "prisonbreak")
-        val f2 = Netflix(2, "kul", "kul")
-        val f3 = Netflix(3, "sahmaran", "sahmaran")
-        val f4 = Netflix(4, "ask", "ask")
-        val f5 = Netflix(5, "young", "young")
+        // Diziler
+        val f1 = Netflix(1, "prison Break", "prisonbreak")
+        val f2 = Netflix(2, "Kül", "kul")
+        val f3 = Netflix(3, "Şahmaran", "sahmaran")
+        val f4 = Netflix(4, "Aşk 101", "ask")
+        val f5 = Netflix(5, "Young Sheldon", "young")
         val f6 = Netflix(6, "Wednesday", "wednesday")
         val f7 = Netflix(7, "You", "you")
 
         filmlerListesi.addAll(listOf(f1, f2, f3, f4, f5, f6, f7))
 
+        // Esaret Listesi
         val e1 = Netflix(8, "Esaret", "esaret")
         val e2 = Netflix(9, "Ayla", "ayla")
-        val e3 = Netflix(10, "Forgotton", "forgotton")
+        val e3 = Netflix(10, "Forgotten", "forgotton")
         val e4 = Netflix(11, "Pandora", "pandora")
-        val e5 = Netflix(12, "Good Place", "goodplace")
-        val e6 = Netflix(13, "strangerthings", "strangerthings")
+        val e5 = Netflix(12, "The Good Place", "goodplace")
+        val e6 = Netflix(13, "Stranger Things", "strangerthings")
 
         esaretListesi.addAll(listOf(e1, e2, e3, e4, e5, e6))
 
-        val d1 = Netflix(1, "Anna", "anna")
+        // Dizi Listesi
+        val d1 = Netflix(1, "Anna With An a", "anna")
         val d2 = Netflix(2, "Birdbox", "birdbox")
         val d3 = Netflix(3, "Friends", "friends")
         val d4 = Netflix(4, "Patron Bebek", "patronbebek")
@@ -76,7 +79,7 @@ fun Anasayfa(navController: NavController) {
                             modifier = Modifier.padding(start = 2.dp),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Text(text = "Netflix", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(text = "Netflix", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Red)
                             Text(text = "Ana Sayfa", fontSize = 10.sp, color = Color.White)
                             Text(text = "Yeni Diziler", fontSize = 10.sp, color = Color.White)
                             Text(text = "Diziler", fontSize = 10.sp, color = Color.White)
@@ -95,6 +98,20 @@ fun Anasayfa(navController: NavController) {
                 .padding(paddingValues)
                 .background(Color.Black)
         ) {
+            // Üstte bir resim eklemek için Image bileşeni
+            val activity = (LocalContext.current as Activity)
+            Image(
+                bitmap = ImageBitmap.imageResource(
+                    id = activity.resources.getIdentifier("ask", "drawable", activity.packageName)
+                ),
+                contentDescription = "Banner Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp) // Resmin yüksekliği
+                    .padding(bottom = 16.dp)
+            )
+
             // Diziler Listesi
             Text(
                 text = "En Çok İzlenen Diziler",
@@ -111,37 +128,27 @@ fun Anasayfa(navController: NavController) {
                     .padding(top = 16.dp)
             ) {
                 items(dizi) { film ->
-                    Card(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .width(70.dp)
-                            .height(100.dp),
-                        elevation = CardDefaults.elevatedCardElevation(8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clickable {
-                                    val filmJson = Gson().toJson(film)
-                                    navController.navigate("detaySayfa/$filmJson")
-                                }
-                        ) {
-                            val activity = (LocalContext.current as Activity)
-                            Image(
-                                bitmap = ImageBitmap.imageResource(
-                                    id = activity.resources.getIdentifier(
-                                        film.resim, "drawable", activity.packageName
-                                    )
-                                ),
-                                contentDescription = film.ad,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-                        }
-                    }
+                    FilmCard(film, navController)
+                }
+            }
+
+            // Esaret Listesi
+            Text(
+                text = "İzlemeye Devam Et",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                items(esaretListesi) { film ->
+                    FilmCard(film, navController)
                 }
             }
 
@@ -161,89 +168,42 @@ fun Anasayfa(navController: NavController) {
                     .padding(top = 16.dp)
             ) {
                 items(filmlerListesi) { film ->
-                    Card(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .width(70.dp)
-                            .height(100.dp),
-                        elevation = CardDefaults.elevatedCardElevation(8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clickable {
-                                    val filmJson = Gson().toJson(film)
-                                    navController.navigate("detaySayfa/$filmJson")
-                                }
-                        ) {
-                            val activity = (LocalContext.current as Activity)
-                            Image(
-                                bitmap = ImageBitmap.imageResource(
-                                    id = activity.resources.getIdentifier(
-                                        film.resim, "drawable", activity.packageName
-                                    )
-                                ),
-                                contentDescription = film.ad,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-                        }
-                    }
+                    FilmCard(film, navController)
                 }
             }
+        }
+    }
+}
 
-            // Filmler Listesi
-            Text(
-                text = "İzlemeye Devam Et",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
+@Composable
+fun FilmCard(film: Netflix, navController: NavController) {
+    Card(
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .width(70.dp)
+            .height(100.dp),
+        elevation = CardDefaults.elevatedCardElevation(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable {
+                    val filmJson = Gson().toJson(film)
+                    navController.navigate("detaySayfa/$filmJson")
+                }
+        ) {
+            val activity = (LocalContext.current as Activity)
+            Image(
+                bitmap = ImageBitmap.imageResource(
+                    id = activity.resources.getIdentifier(film.resim, "drawable", activity.packageName)
+                ),
+                contentDescription = film.ad,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-
-            LazyRow(
-                modifier = Modifier
+                    .weight(1f)
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-            ) {
-                items(esaretListesi) { film ->
-                    Card(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                            .width(70.dp)
-                            .height(100.dp),
-                        elevation = CardDefaults.elevatedCardElevation(8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clickable {
-                                    val filmJson = Gson().toJson(film)
-                                    navController.navigate("detaySayfa/$filmJson")
-                                }
-                        ) {
-                            val activity = (LocalContext.current as Activity)
-                            Image(
-                                bitmap = ImageBitmap.imageResource(
-                                    id = activity.resources.getIdentifier(
-                                        film.resim, "drawable", activity.packageName
-                                    )
-                                ),
-                                contentDescription = film.ad,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
-                        }
-                    }
-                }
-            }
+                    .clip(RoundedCornerShape(8.dp))
+            )
         }
     }
 }
